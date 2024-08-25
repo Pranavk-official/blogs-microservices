@@ -1,29 +1,30 @@
 // CommentList.tsx
-import React, { useEffect } from "react";
-import useFetchComments from "../hooks/useFetchComments";
+import React from "react";
 
-interface CommentListProps {
-  postId: string;
+interface Comment {
+  id: string;
+  content: string;
+  status: "approved" | "rejected" | "pending";
 }
 
-const CommentList: React.FC<CommentListProps> = ({ postId }) => {
-  const { comments, isLoading, error, fetchData } = useFetchComments(postId);
+interface CommentListProps {
+  comments: Comment[];
+}
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  if (isLoading) return <p>Loading comments...</p>;
-  if (error) return <p>{error}</p>;
-
-  const renderedComments = comments.map((comment) => (
-    <li key={comment.id}>{comment.content}</li>
-  ));
+const CommentList: React.FC<CommentListProps> = ({ comments }) => {
+  const renderedComments = comments.map((comment) => {
+    const { id, content } = comment;
+    return <li key={id}>{content}</li>;
+  });
 
   return (
     <div className="card container">
-      <h5 className="lead card-title">Comments for this post</h5>
-      <ul>{renderedComments}</ul>
+      <h5 className="card-title">Comments for this post</h5>
+      {comments.length === 0 ? (
+        <p>No comments yet.</p>
+      ) : (
+        <ul className="card container bg-primary-light">{renderedComments}</ul>
+      )}
     </div>
   );
 };

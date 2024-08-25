@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+type Comment = {
+  id: string;
+  content: string;
+};
+
 // Define the structure of a single post
 interface PostType {
   id: string;
   title: string;
+  comments: Comment[];
 }
 
 // Custom hook to fetch posts
@@ -15,7 +21,7 @@ export const useFetchPosts = (): { [key: string]: PostType } => {
     const fetchPosts = async () => {
       try {
         const res = await axios.get<{ [key: string]: PostType }>(
-          "http://localhost:3001/posts",
+          "http://localhost:3003/posts",
         );
         setPosts(res.data);
       } catch (error) {
