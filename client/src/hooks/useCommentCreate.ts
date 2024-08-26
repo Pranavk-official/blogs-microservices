@@ -17,11 +17,15 @@ export const useCommentCreate = ({ postId }: UseCommentCreateProps) => {
     setError(null);
 
     try {
-      await axios.post(`http://localhost:3002/posts/${postId}/comments`, {
-        content,
-      });
+      await axios.post<{ content: string }>(
+        `http://localhost:3002/posts/${postId}/comments`,
+        {
+          content,
+        }
+      );
       setContent("");
     } catch (err) {
+      console.error(err);
       setError("Failed to create comment. Please try again.");
     } finally {
       setIsLoading(false);

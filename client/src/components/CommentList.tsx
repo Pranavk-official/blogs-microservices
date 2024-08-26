@@ -12,9 +12,25 @@ interface CommentListProps {
 }
 
 const CommentList: React.FC<CommentListProps> = ({ comments }) => {
+  console.log(comments);
   const renderedComments = comments.map((comment) => {
-    const { id, content } = comment;
-    return <li key={id}>{content}</li>;
+    let content;
+
+    console.log(comment);
+
+    if (comment.status === "approved") {
+      content = comment.content;
+    } else if (comment.status === "pending") {
+      content = "This comment is awaiting moderation";
+    } else if (comment.status === "rejected") {
+      content = "This comment has been rejected";
+    }
+
+    return (
+      <li className="m-2" key={comment.id}>
+        {content}
+      </li>
+    );
   });
 
   return (
@@ -23,7 +39,9 @@ const CommentList: React.FC<CommentListProps> = ({ comments }) => {
       {comments.length === 0 ? (
         <p>No comments yet.</p>
       ) : (
-        <ul className="card container bg-primary-light">{renderedComments}</ul>
+        <ul className="card-body card m-2 container bg-primary-light">
+          {renderedComments}
+        </ul>
       )}
     </div>
   );

@@ -6,10 +6,11 @@ import CommentList from "./CommentList";
 const PostList: FC = () => {
   // Use the custom hook to fetch posts
   const posts = useFetchPosts();
+  console.log(posts);
 
   const renderedPosts = Object.values(posts).map((post) => (
     <div
-      className="card"
+      className="card col col-md-6 m-3"
       style={{ width: "30%", marginBottom: "20px" }}
       key={post.id}
     >
@@ -26,9 +27,7 @@ const PostList: FC = () => {
     <>
       <h2>PostList</h2>
       {/* Render posts */}
-      <div className="d-flex flex-row flex-wrap justify-content-between">
-        {renderedPosts}
-      </div>
+      <div className="row">{renderedPosts}</div>
     </>
   );
 };

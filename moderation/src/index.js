@@ -14,40 +14,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const crypto_1 = require("crypto");
-const cors_1 = __importDefault(require("cors"));
 const axios_1 = __importDefault(require("axios"));
+const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = process.env.PORT || 3001;
-app.use(express_1.default.json());
+const port = process.env.PORT || 3004;
 app.use((0, cors_1.default)());
-const posts = {};
-app.get("/posts", (req, res) => {
-    res.send(posts);
-});
-app.post("/posts", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = (0, crypto_1.randomBytes)(4).toString("hex");
-    const { title } = req.body;
-    console.log(req.body);
-    console.log(posts);
-    posts[id] = {
-        id,
-        title,
-    };
-    yield axios_1.default.post("http://localhost:3005/events", {
-        type: "PostCreated",
-        data: {
-            id,
-            title,
-        },
-    });
-    res.status(201).send(posts[id]);
+app.use(express_1.default.json());
+app.post("/events", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { type, data } = req.body;
+    console.log(`Event Recieved: ${type}, ${data}`);
+    if (type === "CommentCreated") {
+        const status = data.content.includes("orange") ? "rejected" : "approved";
+        yield axios_1.default.post("http://localhost:3005/events", {
+            type: "CommentModerated",
+            data: {
+                id: data.id,
+                postId: data.postId,
+                content: data.content,
+                status,
+            },
+        });
+        res.send({});
+    }
 }));
-app.post("/events", (req, res) => {
-    console.log("Received Event", req.body.type);
-    res.send({});
-});
 app.listen(port, () => {
-    console.log(`[server]: Posts service is running at http://localhost:${port}`);
+    console.log(`[server]: Moderation service is running at http://localhost:${port}`);
 });

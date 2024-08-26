@@ -4,6 +4,7 @@ import axios from "axios";
 type Comment = {
   id: string;
   content: string;
+  status: "approved" | "rejected" | "pending";
 };
 
 // Define the structure of a single post
@@ -21,8 +22,9 @@ export const useFetchPosts = (): { [key: string]: PostType } => {
     const fetchPosts = async () => {
       try {
         const res = await axios.get<{ [key: string]: PostType }>(
-          "http://localhost:3003/posts",
+          "http://localhost:4006/posts"
         );
+        console.log(posts);
         setPosts(res.data);
       } catch (error) {
         console.error("Failed to fetch posts:", error);

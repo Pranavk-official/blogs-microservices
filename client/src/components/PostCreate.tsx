@@ -8,6 +8,7 @@ const PostCreate: FC = () => {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setMessage(null); // Reset feedback message
 
     try {
       await axios.post("http://localhost:3001/posts", { title });
@@ -15,7 +16,7 @@ const PostCreate: FC = () => {
       setMessage("Post created successfully!"); // Success message
     } catch (error) {
       console.error("Failed to create post:", error);
-      setMessage("Failed to create post."); // Error message
+      setMessage("Failed to create post. Please try again.");
     }
   };
 
@@ -37,9 +38,12 @@ const PostCreate: FC = () => {
         <button className="my-3 btn btn-primary">Submit</button>
       </form>
       {/* Display feedback message */}
+      {message}
       {message && (
         <p
-          className={`mt-3 ${message.includes("successfully") ? "text-success" : "text-danger"}`}
+          className={`mt-3 ${
+            message.includes("successfully") ? "text-success" : "text-danger"
+          }`}
         >
           {message}
         </p>
